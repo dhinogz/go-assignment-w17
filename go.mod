@@ -2,7 +2,10 @@ module github.com/dhinogz/go-assignment-w17
 
 go 1.22.1
 
-require go.mongodb.org/mongo-driver v1.15.0
+require (
+	github.com/joho/godotenv v1.5.1
+	go.mongodb.org/mongo-driver v1.15.0
+)
 
 require (
 	github.com/golang/snappy v0.0.1 // indirect

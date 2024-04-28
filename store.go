@@ -2,17 +2,18 @@ package main
 
 import (
 	"context"
-	"errors"
+	"fmt"
+	"log/slog"
 	"time"
-	//
-	// "go.mongodb.org/mongo-driver/bson"
-	// "go.mongodb.org/mongo-driver/bson/primitive"
+
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// TODO: Fill in this data with env variables
-const DBNAME = "records"
-const userColl = "records"
+const (
+	dbName     = "getircase-study"
+	recordColl = "records"
+)
 
 type Store interface {
 	GetRecords(context.Context, RecordParams) Response
@@ -23,13 +24,25 @@ type MongoStore struct {
 	client *mongo.Client
 }
 
-func NewMongoStore(client *mongo.Client) (*MongoStore, error) {
-	if client == nil {
-		return nil, errors.New("new mongo store: client provided is nil")
+func NewMongoStore(mongoURI string) (*MongoStore, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+	opts := options.Client().ApplyURI(mongoURI).SetServerAPIOptions(serverAPI)
+
+	client, err := mongo.Connect(ctx, opts)
+	if err != nil {
+		return nil, fmt.Errorf("could not initialize new mongo client: %+v", err)
 	}
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		return nil, fmt.Errorf("could not ping mongo database: %+v", err)
+	}
+	slog.Info("Connected to database!")
 	return &MongoStore{
 		client: client,
-		coll:   client.Database(DBNAME).Collection(userColl),
+		coll:   client.Database(dbName).Collection(recordColl),
 	}, nil
 }
 
