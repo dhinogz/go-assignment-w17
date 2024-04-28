@@ -30,6 +30,8 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handlers.handleHealth)
 	mux.HandleFunc("/records", handlers.handleRecords)
+	mux.HandleFunc("GET /in-memory", handlers.handleInMemory)
+	mux.HandleFunc("POST /in-memory", handlers.handleCreateInMemory)
 
 	srv := http.Server{
 		Addr:    listenAddr,
