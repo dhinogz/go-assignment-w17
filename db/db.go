@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"context"
@@ -16,7 +16,7 @@ const (
 )
 
 type Store interface {
-	GetRecords(context.Context, RecordParams) Response
+	GetRecords(context.Context, RecordParams) ([]Record, error)
 }
 
 type MongoStore struct {
@@ -44,18 +44,4 @@ func NewMongoStore(mongoURI string) (*MongoStore, error) {
 		client: client,
 		coll:   client.Database(dbName).Collection(recordColl),
 	}, nil
-}
-
-func (s *MongoStore) GetRecords(ctx context.Context, params RecordParams) Response {
-	return Response{
-		Code: 0,
-		Msg:  "",
-		Records: []RecordResponse{
-			{
-				Key:        "",
-				CreatedAt:  time.Now(),
-				TotalCount: 0,
-			},
-		},
-	}
 }

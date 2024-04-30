@@ -4,22 +4,26 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+
+	"github.com/dhinogz/go-assignment-w17/config"
+	"github.com/dhinogz/go-assignment-w17/db"
+	"github.com/dhinogz/go-assignment-w17/handlers"
 )
 
 func main() {
-	cfg, err := loadConfig()
+	cfg, err := config.LoadConfig()
 	if err != nil {
 		slog.Error("could not load env", "err", err)
 		os.Exit(1)
 	}
 
-	store, err := NewMongoStore(cfg.MongoURI)
+	store, err := db.NewMongoStore(cfg.MongoURI)
 	if err != nil {
 		slog.Error("could not initialize mongo store", "err", err)
 		os.Exit(1)
 	}
 
-	handlers := NewHandlers(store)
+	handlers := handlers.NewHandlers(store)
 
 	mux := NewMux(handlers)
 
@@ -36,15 +40,17 @@ func main() {
 	}
 }
 
-func NewMux(h Handlers) *http.ServeMux {
+func NewMux(h handlers.Handlers) *http.ServeMux {
 	mux := http.NewServeMux()
 
-	// Add some middleware for logging
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Healthy"))
+	})
 
-	mux.HandleFunc("/", h.handleHealth)
-	mux.HandleFunc("/records", h.handleRecords)
-	mux.HandleFunc("GET /in-memory", h.handleInMemory)
-	mux.HandleFunc("POST /in-memory", h.handleCreateInMemory)
+	mux.HandleFunc("POST /records", h.HandleRecords)
+	mux.HandleFunc("GET /in-memory", h.HandleInMemory)
+	mux.HandleFunc("POST /in-memory", h.HandleCreateInMemory)
 
 	return mux
 }
