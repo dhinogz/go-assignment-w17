@@ -12,7 +12,7 @@ type Config struct {
 	ListenAddr string
 }
 
-func LoadConfig() (Config, error) {
+func Load() (Config, error) {
 	err := godotenv.Load()
 	if err != nil {
 		return Config{}, errors.New("couldn't load env")

@@ -14,10 +14,10 @@ type Handlers struct {
 	inMemory map[string]string
 }
 
-func NewHandlers(store db.Store) Handlers {
+func New(store db.Store, inMemory map[string]string) Handlers {
 	return Handlers{
 		store:    store,
-		inMemory: make(map[string]string),
+		inMemory: inMemory,
 	}
 }
 

@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	cfg, err := config.LoadConfig()
+	cfg, err := config.Load()
 	if err != nil {
 		slog.Error("could not load env", "err", err)
 		os.Exit(1)
@@ -23,7 +23,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	handlers := handlers.NewHandlers(store)
+	inMemoryStorage := make(map[string]string)
+
+	handlers := handlers.New(store, inMemoryStorage)
 
 	mux := NewMux(handlers)
 
