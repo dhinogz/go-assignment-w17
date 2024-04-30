@@ -34,7 +34,7 @@ func writeJSON(
 ) error {
 	js, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {
-		return err
+		return errors.New("could not marshall data to JSON")
 	}
 
 	js = append(js, '\n')
