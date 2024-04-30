@@ -5,19 +5,18 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/dhinogz/go-assignment-w17/config"
 	"github.com/dhinogz/go-assignment-w17/db"
 	"github.com/dhinogz/go-assignment-w17/handlers"
 )
 
 func main() {
-	cfg, err := config.Load()
+	cfg, err := LoadConfig()
 	if err != nil {
 		slog.Error("could not load env", "err", err)
 		os.Exit(1)
 	}
 
-	store, err := db.NewMongoStore(cfg.MongoURI)
+	store, err := db.NewMongoStore(cfg.mongoURI)
 	if err != nil {
 		slog.Error("could not initialize mongo store", "err", err)
 		os.Exit(1)
@@ -30,11 +29,11 @@ func main() {
 	mux := NewMux(handlers)
 
 	srv := http.Server{
-		Addr:    cfg.ListenAddr,
+		Addr:    cfg.listenAddr,
 		Handler: mux,
 	}
 
-	slog.Info("Starting server", "listenAddr", cfg.ListenAddr)
+	slog.Info("Starting server", "listenAddr", cfg.listenAddr)
 	err = srv.ListenAndServe()
 	if err != nil {
 		slog.Error("Error in server, will end process", "err", err)
