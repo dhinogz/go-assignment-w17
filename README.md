@@ -49,8 +49,6 @@ make build
 ![alt text](docs/instructions2.png)
 
 ## Todo
-- [ ] Finish MongoDB call for GetRecords
 - [ ] Unit Tests
-- [ ] Try out [this](https://grafana.com/blog/2024/02/09/how-i-write-http-services-in-go-after-13-years/) philosophy of HTTP servers
 
 

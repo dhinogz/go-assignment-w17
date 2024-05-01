@@ -5,10 +5,10 @@ import (
 )
 
 type RecordParams struct {
-	StartDate string `json:"startDate"`
-	EndDate   string `json:"endDate"`
-	MinCount  int    `json:"minCount"`
-	MaxCount  int    `json:"maxCount"`
+	StartDate time.Time
+	EndDate   time.Time
+	MinCount  int
+	MaxCount  int
 }
 
 type Record struct {
